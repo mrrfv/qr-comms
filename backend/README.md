@@ -12,7 +12,7 @@ Rust and Cargo are required.
 
 1.  Clone the repository.
 2.  Run the application with `cargo run`.
-    The server will start on `http://0.0.0.0:3000` (or the port configured in `backend/src/config.rs`).
+    The server will start on `http://0.0.0.0:3000`.
 
 ## Docker
 

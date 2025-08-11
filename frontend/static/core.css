@@ -1,0 +1,46 @@
+.content {
+  padding-left: 25%;
+  padding-right: 25%;
+}
+
+/* Set the padding to 10% on smaller screens (like tablets) */
+@media (max-width: 1150px) {
+  .content {
+    padding-left: 5%;
+    padding-right: 5%;
+  }
+}
+
+body {
+  background-color: rgb(242, 242, 242); /* Light color scheme */
+  color: rgb(47, 47, 47); /* Dark text */
+  font-family: sans-serif; /* Montserrat font */
+  display: flex;
+  align-content: center;
+  justify-content: center;
+  font-size: 1.4em;
+}
+
+.text-center {
+  text-align: center;
+}
+
+a {
+  color: #105c6e;
+}
+
+/* Dark theme support */
+@media (prefers-color-scheme: dark) {
+  body {
+    background-color: #242424;
+    color: #f2f2f2;
+  }
+}
+
+/* Mobile devices */
+@media (max-width: 767px) {
+  .content {
+    padding-left: 0;
+    padding-right: 0;
+  }
+}
