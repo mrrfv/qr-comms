@@ -14,6 +14,7 @@ RUN mkdir src && echo "fn main() {println!(\"hello\");}" > src/main.rs
 # Build dependencies. This command will be cached unless Cargo.toml or Cargo.lock changes.
 # We specify the 'x86_64-unknown-linux-musl' target for static linking,
 # which allows us to use a minimal base image in the final stage.
+RUN rustup target add x86_64-unknown-linux-musl
 RUN cargo build --release --target x86_64-unknown-linux-musl
 
 # Remove the dummy src directory and its contents to prepare for copying the actual source.
