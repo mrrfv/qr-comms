@@ -3,28 +3,17 @@ FROM rust:1 AS builder
 
 WORKDIR /app
 
-# Copy Cargo.toml and Cargo.lock first to leverage Docker's build cache.
+# Copy Cargo.toml and Cargo.lock
 COPY Cargo.toml Cargo.lock ./
-
-# Create a dummy src/main.rs. This allows Cargo to download and compile
-# all dependencies based on Cargo.toml and Cargo.lock before the actual
-# source code is copied. This maximizes caching for the 'cargo build' step.
-RUN mkdir src && echo "fn main() {println!(\"hello\");}" > src/main.rs
+# Copy the actual Rust source code into the container.
+COPY src src/
 
 # Build dependencies. This command will be cached unless Cargo.toml or Cargo.lock changes.
 # We specify the 'x86_64-unknown-linux-musl' target for static linking,
 # which allows us to use a minimal base image in the final stage.
 RUN rustup target add x86_64-unknown-linux-musl
-RUN cargo build --release --target x86_64-unknown-linux-musl
 
-# Remove the dummy src directory and its contents to prepare for copying the actual source.
-RUN rm -rf src
-
-# Copy the actual Rust source code into the container.
-COPY src src/
-
-# Re-run cargo build to compile the application's code.
-# Since dependencies are already cached, this step will be faster.
+# Run cargo build to compile the application's code.
 RUN cargo build --release --target x86_64-unknown-linux-musl
 
 # Stage 2: Runner
