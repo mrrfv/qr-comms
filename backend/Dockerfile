@@ -33,10 +33,10 @@ FROM alpine:latest AS runner
 WORKDIR /app
 
 # Copy the compiled release binary from the builder stage.
-COPY --from=builder /app/target/x86_64-unknown-linux-musl/release/qr-comms ./qr-comms
+COPY --from=builder /app/target/x86_64-unknown-linux-musl/release/qr_comms_backend ./qr_comms_backend
 
 # Set environment variables for the application.
 # RUST_LOG controls the logging level for the `tracing` library.
 ENV RUST_LOG=info
 
-ENTRYPOINT ["./qr-comms"]
+ENTRYPOINT ["./qr_comms_backend"]
