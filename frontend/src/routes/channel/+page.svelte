@@ -129,6 +129,10 @@
 	});
 </script>
 
+<svelte:head>
+	<title>QR Comms</title>
+</svelte:head>
+
 <p>{status}</p>
 {#if status && (!socket || !(socket.readyState == socket.OPEN))}
 	<button onclick={reconnect}>Reconnect</button>

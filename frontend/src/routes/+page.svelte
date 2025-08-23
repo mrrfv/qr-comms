@@ -20,6 +20,10 @@
 	});
 </script>
 
+<svelte:head>
+	<title>Quick Message Sharing - QR Comms</title>
+</svelte:head>
+
 <p>To connect to this device, scan the QR code below.</p>
 <div class="qrcode">
 	<QrCode errorCorrection="L" size="250" value={qr_code_location}></QrCode>
