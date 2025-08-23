@@ -134,6 +134,7 @@
 </svelte:head>
 
 <p>{status}</p>
+<p><small>Do not send messages until both devices are connected.</small></p>
 {#if status && (!socket || !(socket.readyState == socket.OPEN))}
 	<button onclick={reconnect}>Reconnect</button>
 {/if}
