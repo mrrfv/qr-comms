@@ -123,6 +123,18 @@
 		});
 	}
 
+	// Copy text to clipboard
+	function copyToClipboard(text: string) {
+		navigator.clipboard.writeText(text)
+		.then(() => {
+			alert('Copied to clipboard!');
+		})
+		.catch((err) => {
+			console.error('Could not copy text: ', err);
+			alert('Failed to copy to clipboard.');
+		});
+	}
+
 	onMount(async () => {
 		// Connect to server
 		connectWebSocket();
@@ -142,7 +154,7 @@
 <div class="chat-container">
 	<div class="messages">
 		{#each messages as msg (msg.id)}
-			<div class="message" class:sent={msg.owned}>
+			<div class="message" onclick={() => copyToClipboard(msg.content.trim())} class:sent={msg.owned}>
 				{@html linkify(msg.content)}
 			</div>
 		{/each}
@@ -159,13 +171,14 @@
 	.chat-container {
 		display: flex;
 		flex-direction: column;
-		max-width: 500px;
+		max-width: 80%;
+		height: 400px;
 		margin: auto;
 		padding: 1rem;
 		font-family: system-ui, sans-serif;
 		background: #f5f5f5;
 		border-radius: 1rem;
-		box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+		box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
 	}
 
 	.messages {
@@ -189,12 +202,33 @@
 		box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
 		word-wrap: break-word;
 		animation: fadeIn 0.3s ease;
+		transition: all 0.2s;
+		text-align: left;
+	}
+
+	.message::after {
+		content: '';
+		display: block;
+		font-size: 0.7rem;
+		color: #666;
+		opacity: 0; /* Start invisible */
+		transition: opacity 0.3s ease; /* Smooth transition for opacity */
+	}
+
+	.message:hover::after {
+		content: ' (click to copy)';
+		opacity: 1; /* Fade in on hover */
 	}
 
 	.message.sent {
 		align-self: flex-end;
 		background: #007bff;
 		color: white;
+		text-align: right;
+	}
+
+	.message.sent::after {
+		color: #cce5ff;
 	}
 
 	@keyframes fadeIn {
