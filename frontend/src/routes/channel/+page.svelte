@@ -146,7 +146,7 @@
 </svelte:head>
 
 <p>{status}</p>
-<p><small>Do not send messages until both devices are connected.</small></p>
+
 {#if status && (!socket || !(socket.readyState == socket.OPEN))}
 	<button onclick={reconnect}>Reconnect</button>
 {/if}
@@ -161,6 +161,7 @@
 		<div bind:this={messagesEndEl}></div>
 	</div>
 
+	<p class="fineprint" class:hidden={messages.length}>Do not send messages until both devices are connected.</p>
 	<form onsubmit={send_message}>
 		<input bind:value={message} type="text" placeholder="Message..." />
 		<button type="submit">Send</button>
@@ -266,5 +267,16 @@
 
 	button:hover {
 		background: #0056b3;
+	}
+
+	.fineprint {
+		font-size: 0.9rem;
+		color: #666;
+		margin-bottom: 0.5rem;
+		text-align: center;
+	}
+
+	.hidden {
+		display: none;
 	}
 </style>
