@@ -157,15 +157,17 @@
 <div class="chat-container">
 	<div class="messages">
 		{#each messages as msg (msg.id)}
-			<button
-				class="message"
-				onclick={() => copyToClipboard(msg.content.trim())}
-				onkeydown={(e) => e.key === 'Enter' && copyToClipboard(msg.content.trim())}
-				class:sent={msg.owned}
-				aria-label="Copy message to clipboard"
-				tabindex="0">
+			<div class="message" class:sent={msg.owned}>
 				{@html linkify(msg.content)}
-			</button>
+				<button
+					class="copy-button"
+					onclick={() => copyToClipboard(msg.content.trim())}
+					onkeydown={(e) => e.key === 'Enter' && copyToClipboard(msg.content.trim())}
+					aria-label="Copy message to clipboard"
+					tabindex="0">
+					Copy
+				</button>
+			</div>
 		{/each}
 		<div bind:this={messagesEndEl}></div>
 	</div>
@@ -216,18 +218,29 @@
 		text-align: left;
 	}
 
-	.message::after {
-		content: '';
-		display: block;
+	.copy-button {
 		font-size: 0.7rem;
+		background: transparent;
 		color: #666;
-		opacity: 0; /* Start invisible */
-		transition: opacity 0.3s ease; /* Smooth transition for opacity */
+		border: none;
+		padding: 0.2rem 0.4rem;
+		margin-left: 0.5rem;
+		border-radius: 0.3rem;
+		cursor: pointer;
+		display: none;
+		transition: opacity 0.3s ease;
 	}
 
-	.message:hover::after {
-		content: ' (click to copy)';
-		opacity: 1; /* Fade in on hover */
+	.copy-button:hover {
+		background: rgba(0, 0, 0, 0.1);
+	}
+
+	.message:hover .copy-button {
+		display: block;
+	}
+
+	.message.sent .copy-button {
+		color: #cce5ff;
 	}
 
 	.message.sent {
@@ -237,9 +250,6 @@
 		text-align: right;
 	}
 
-	.message.sent::after {
-		color: #cce5ff;
-	}
 
 	@keyframes fadeIn {
 		from {
