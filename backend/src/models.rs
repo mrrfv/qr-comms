@@ -4,7 +4,7 @@ use futures::channel::mpsc::Sender;
 use serde::Deserialize;
 use std::collections::HashMap;
 use std::sync::Arc;
-use tokio::sync::Mutex;
+use tokio::sync::{Mutex, RwLock};
 use tracing::{error, info};
 use uuid::Uuid;
 
@@ -122,4 +122,4 @@ impl Channel {
 }
 
 /// Manages all active communication channels.
-pub type Channels = Arc<Mutex<HashMap<ChannelId, Channel>>>;
+pub type Channels = Arc<RwLock<HashMap<ChannelId, Arc<Mutex<Channel>>>>>;
