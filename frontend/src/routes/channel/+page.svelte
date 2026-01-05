@@ -112,7 +112,7 @@
 					'>': '>',
 					'"': '"',
 					"'": '&#39;'
-				}[match] || match)
+				})[match] || match
 		);
 	}
 
@@ -128,14 +128,15 @@
 
 	// Copy text to clipboard
 	function copyToClipboard(text: string) {
-		navigator.clipboard.writeText(text)
-		.then(() => {
-			alert('Copied to clipboard!');
-		})
-		.catch((err) => {
-			console.error('Could not copy text: ', err);
-			alert('Failed to copy to clipboard.');
-		});
+		navigator.clipboard
+			.writeText(text)
+			.then(() => {
+				alert('Copied to clipboard!');
+			})
+			.catch((err) => {
+				console.error('Could not copy text: ', err);
+				alert('Failed to copy to clipboard.');
+			});
 	}
 
 	onMount(async () => {
@@ -164,7 +165,8 @@
 					onclick={() => copyToClipboard(msg.content.trim())}
 					onkeydown={(e) => e.key === 'Enter' && copyToClipboard(msg.content.trim())}
 					aria-label="Copy message to clipboard"
-					tabindex="0">
+					tabindex="0"
+				>
 					Copy
 				</button>
 			</div>
@@ -172,7 +174,9 @@
 		<div bind:this={messagesEndEl}></div>
 	</div>
 
-	<p class="fineprint" class:hidden={messages.length}>Do not send messages until both devices are connected.</p>
+	<p class="fineprint" class:hidden={messages.length}>
+		Do not send messages until both devices are connected.
+	</p>
 	<form onsubmit={send_message}>
 		<input bind:value={message} type="text" placeholder="Message..." />
 		<button type="submit">Send</button>
@@ -249,7 +253,6 @@
 		color: white;
 		text-align: right;
 	}
-
 
 	@keyframes fadeIn {
 		from {

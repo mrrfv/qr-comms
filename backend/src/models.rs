@@ -92,15 +92,15 @@ impl Channel {
 
         for participant in &mut self.participants {
             // Only send to others, not back to the original sender
-            if participant.id != from_participant_id {
-                if let Err(e) = participant.sender.send(message.clone()).await {
-                    error!(
-                        "Error sending message to participant {}: {}",
-                        participant.id, e
-                    );
-                    // If sending fails, assume the participant is disconnected and mark them for removal.
-                    disconnected_ids.push(participant.id);
-                }
+            if participant.id != from_participant_id
+                && let Err(e) = participant.sender.send(message.clone()).await
+            {
+                error!(
+                    "Error sending message to participant {}: {}",
+                    participant.id, e
+                );
+                // If sending fails, assume the participant is disconnected and mark them for removal.
+                disconnected_ids.push(participant.id);
             }
         }
 

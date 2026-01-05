@@ -82,7 +82,7 @@ async fn test_broadcast_locking_isolation() {
 
     // Setup Channel A with a "slow" receiver (filled buffer)
     let (tx_a1, mut rx_a1) = mpsc::channel(0); // 0 buffer size means it blocks if not read
-    let pid_a1 = channel_manager
+    let _pid_a1 = channel_manager
         .add_participant_to_channel(channel_a, tx_a1, &max_channels)
         .await
         .unwrap();
@@ -96,7 +96,7 @@ async fn test_broadcast_locking_isolation() {
 
     // Setup Channel B (normal)
     let (tx_b1, _rx_b1) = mpsc::channel(10);
-    let pid_b1 = channel_manager
+    let _pid_b1 = channel_manager
         .add_participant_to_channel(channel_b, tx_b1, &max_channels)
         .await
         .unwrap();
