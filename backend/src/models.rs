@@ -16,6 +16,24 @@ pub type ParticipantId = usize;
 pub struct AppConfig {
     pub server_port: u16,
     pub max_channel_count: usize,
+    #[serde(default = "default_max_message_size")]
+    pub max_message_size: usize,
+    #[serde(default = "default_rate_limit_burst")]
+    pub rate_limit_burst: u32,
+    #[serde(default = "default_rate_limit_per_second")]
+    pub rate_limit_per_second: u32,
+}
+
+fn default_max_message_size() -> usize {
+    64 * 1024 // 64 KB
+}
+
+fn default_rate_limit_burst() -> u32 {
+    10
+}
+
+fn default_rate_limit_per_second() -> u32 {
+    5
 }
 
 /// Represents a single participant in a channel.

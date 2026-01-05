@@ -10,6 +10,8 @@ use tracing::{debug, error, info, warn};
 
 use crate::AppState;
 use crate::models::ChannelId;
+use governor::{Quota, RateLimiter};
+use std::num::NonZeroU32;
 
 /// Handler for the WebSocket upgrade request.
 pub async fn websocket_handler(
@@ -26,7 +28,8 @@ pub async fn websocket_handler(
         }
     };
 
-    ws.on_upgrade(move |socket| handle_websocket(socket, channel_id, state))
+    ws.max_message_size(state.config.max_message_size)
+        .on_upgrade(move |socket| handle_websocket(socket, channel_id, state))
 }
 
 /// Handles the established WebSocket connection for a participant in a channel.
@@ -83,11 +86,38 @@ pub async fn handle_websocket(socket: WebSocket, channel_id: ChannelId, state: A
         );
     });
 
+    // Initialize rate limiter
+    let rate_limiter = RateLimiter::direct(
+        Quota::per_second(
+            NonZeroU32::new(state.config.rate_limit_per_second).unwrap_or(NonZeroU32::MIN),
+        )
+        .allow_burst(
+            NonZeroU32::new(state.config.rate_limit_burst).unwrap_or(NonZeroU32::MIN),
+        ),
+    );
+
     // Loop to receive messages from the client via the WebSocket receiver.
     while let Some(msg) = receiver_ws.next().await {
         if let Ok(msg) = msg {
             match msg {
                 Message::Text(text) => {
+                    if rate_limiter.check().is_err() {
+                        warn!(
+                            "Rate limit exceeded for participant {} in channel {}",
+                            participant_id, channel_id
+                        );
+                        if let Err(e) = tx_clone
+                            .send(Message::Text("Error: Rate limit exceeded.".to_string().into()))
+                            .await
+                        {
+                            error!(
+                                "Failed to send rate limit warning to participant {} in channel {}: {}",
+                                participant_id, channel_id, e
+                            );
+                        }
+                        continue;
+                    }
+
                     debug!(
                         "Received message from participant {} in channel {}: {}",
                         participant_id, channel_id, text
