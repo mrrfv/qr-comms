@@ -50,11 +50,14 @@
 						`Failed to decrypt message. If this persists, restart your communication with another QR code.`
 					);
 					console.error(e);
+					return ''; // Return empty string to handle the error case
 				}
 			);
-			const decrypted_message = JSON.parse(decrypted_message_raw);
-			shared_key = decrypted_message.new_shared_key;
-			add_new_message(decrypted_message.message, false);
+			if (decrypted_message_raw) {
+				const decrypted_message = JSON.parse(decrypted_message_raw);
+				shared_key = decrypted_message.new_shared_key;
+				add_new_message(decrypted_message.message, false);
+			}
 		});
 	}
 
@@ -102,14 +105,14 @@
 	function escapeHTML(str: string) {
 		return str.replace(
 			/[&<>"']/g,
-			(match) =>
+			(match: string) =>
 				({
-					'&': '&amp;',
-					'<': '&lt;',
-					'>': '&gt;',
-					'"': '&quot;',
+					'&': '&',
+					'<': '<',
+					'>': '>',
+					'"': '"',
 					"'": '&#39;'
-				})[match]
+				}[match] || match)
 		);
 	}
 
@@ -154,9 +157,15 @@
 <div class="chat-container">
 	<div class="messages">
 		{#each messages as msg (msg.id)}
-			<div class="message" onclick={() => copyToClipboard(msg.content.trim())} class:sent={msg.owned}>
+			<button
+				class="message"
+				onclick={() => copyToClipboard(msg.content.trim())}
+				onkeydown={(e) => e.key === 'Enter' && copyToClipboard(msg.content.trim())}
+				class:sent={msg.owned}
+				aria-label="Copy message to clipboard"
+				tabindex="0">
 				{@html linkify(msg.content)}
-			</div>
+			</button>
 		{/each}
 		<div bind:this={messagesEndEl}></div>
 	</div>
