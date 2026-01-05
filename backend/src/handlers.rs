@@ -91,9 +91,7 @@ pub async fn handle_websocket(socket: WebSocket, channel_id: ChannelId, state: A
         Quota::per_second(
             NonZeroU32::new(state.config.rate_limit_per_second).unwrap_or(NonZeroU32::MIN),
         )
-        .allow_burst(
-            NonZeroU32::new(state.config.rate_limit_burst).unwrap_or(NonZeroU32::MIN),
-        ),
+        .allow_burst(NonZeroU32::new(state.config.rate_limit_burst).unwrap_or(NonZeroU32::MIN)),
     );
 
     // Loop to receive messages from the client via the WebSocket receiver.
@@ -107,7 +105,9 @@ pub async fn handle_websocket(socket: WebSocket, channel_id: ChannelId, state: A
                             participant_id, channel_id
                         );
                         if let Err(e) = tx_clone
-                            .send(Message::Text("Error: Rate limit exceeded.".to_string().into()))
+                            .send(Message::Text(
+                                "Error: Rate limit exceeded.".to_string().into(),
+                            ))
                             .await
                         {
                             error!(

@@ -1,8 +1,8 @@
 use crate::models::{Channel, ChannelId, Channels, Participant, ParticipantId};
 use futures::channel::mpsc::Sender;
 use std::collections::HashMap;
-use std::sync::atomic::{AtomicUsize, Ordering};
 use std::sync::Arc;
+use std::sync::atomic::{AtomicUsize, Ordering};
 use tokio::sync::{Mutex, RwLock};
 use tracing::{debug, info, warn};
 
