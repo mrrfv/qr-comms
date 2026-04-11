@@ -12,4 +12,4 @@ tracing = "0.1.40"
 tracing-subscriber = { version = "0.3.23", features = ["env-filter"] }
 envy = "0.4.2"
 serde = { version = "1.0.219", features = ["derive"] }
-governor = "0.8.0"
+governor = "0.10.4"
